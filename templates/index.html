@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tip of Your Tongue</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Tip of Your Tongue</h1>
+        <p class="subtitle">When you just cannot for the life of you remember a word... <strong>lethologica</strong>.</p>
+
+        <div class="mode-toggle">
+            <button id="modeBtn">🌙 Dark Mode</button>
+        </div>
+
+        <div class="card">
+            <input type="text" id="clue" placeholder="Describe the word...">
+            <button id="findBtn">Find My Word</button>
+        </div>
+
+        <div id="loading" class="hidden">Thinking 🤔...</div>
+
+        <div id="resultCard" class="hidden">
+            <h2 id="primaryWord"></h2>
+            <p id="definition"></p>
+            <hr>
+            <p id="alternatives"></p>
+
+            <div class="actions">
+                <button id="copyBtn">📋 Copy</button>
+                <button id="shareBtn">🔗 Share</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const button = document.getElementById("findBtn");
+        const clueInput = document.getElementById("clue");
+        const loading = document.getElementById("loading");
+        const resultCard = document.getElementById("resultCard");
+        const primaryWord = document.getElementById("primaryWord");
+        const definition = document.getElementById("definition");
+        const alternatives = document.getElementById("alternatives");
+
+        const copyBtn = document.getElementById("copyBtn");
+        const shareBtn = document.getElementById("shareBtn");
+        const modeBtn = document.getElementById("modeBtn");
+
+        // 🧠 Search logic
+        button.addEventListener("click", async () => {
+            const clue = clueInput.value.trim();
+            if (!clue) return alert("Please enter a clue!");
+
+            loading.classList.remove("hidden");
+            resultCard.classList.add("hidden");
+
+            try {
+                const response = await fetch("/find_word", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ clue })
+                });
+
+                const data = await response.json();
+                loading.classList.add("hidden");
+
+                if (data.primary) {
+                    primaryWord.textContent = data.primary;
+                    definition.textContent = data.definition ? data.definition : "";
+                    alternatives.textContent = data.alternatives.length
+                        ? "Other possible words: " + data.alternatives.join(", ")
+                        : "";
+                    resultCard.classList.remove("hidden");
+                } else {
+                    primaryWord.textContent = "No results found.";
+                    resultCard.classList.remove("hidden");
+                }
+            } catch (err) {
+                loading.classList.add("hidden");
+                alert("Something went wrong. Try again!");
+            }
+        });
+
+        // 📋 Copy
+        copyBtn.addEventListener("click", () => {
+            const text = `${primaryWord.textContent} — ${definition.textContent}`;
+            navigator.clipboard.writeText(text);
+            alert("Copied to clipboard!");
+        });
+
+        // 🔗 Share
+        shareBtn.addEventListener("click", () => {
+            const text = `I found this word using Tip of Your Tongue: ${primaryWord.textContent} — ${definition.textContent}`;
+            navigator.share ? navigator.share({ text }) : alert("Sharing not supported here.");
+        });
+
+        // 🌗 Light/Dark Mode
+        modeBtn.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+            if (document.body.classList.contains("dark")) {
+                modeBtn.textContent = "☀️ Light Mode";
+            } else {
+                modeBtn.textContent = "🌙 Dark Mode";
+            }
+        });
+    </script>
+</body>
+</html>
