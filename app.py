@@ -16,6 +16,10 @@ print("🔑 Loaded API key:", openai.api_key[:8] + "..." if openai.api_key else 
 def sitemap():
     return send_from_directory(".", "sitemap.xml")
 
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory(".", "robots.txt")
+
 @app.route("/")
 def index():
     return render_template("index.html")
