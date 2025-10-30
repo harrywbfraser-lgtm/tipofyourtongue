@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Tip of Your Tongue – Find the Word You Can't Remember</title>
-  <meta name="description" content="Can't remember a word? Describe it and this tool will suggest the word on the tip of your tongue, plus alternatives, definition, and copy/share options." />
-  <meta name="keywords" content="can't remember a word, find word by description, tip of your tongue, word finder, lethologica, AI word finder" />
+  <meta name="description" content="Can't remember a word? Describe it and our AI will suggest the perfect word that's on the tip of your tongue, with definitions and alternatives." />
+  <meta name="keywords" content="find word by description, can't remember a word, tip of your tongue, word finder, lethologica, AI word finder, vocabulary helper" />
   <link rel="canonical" href="https://tipofyourtongue.co.uk/" />
 
   <!-- Open Graph / Social -->
@@ -14,7 +14,6 @@
   <meta property="og:description" content="Describe the word and we'll find it. Perfect for when it's right on the tip of your tongue." />
   <meta property="og:url" content="https://tipofyourtongue.co.uk/" />
   <meta property="og:type" content="website" />
-  <!-- If you create a preview image, put it in /static and update the line below -->
   <meta property="og:image" content="https://tipofyourtongue.co.uk/static/preview.png" />
 
   <!-- Favicon -->
@@ -23,6 +22,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
   <div class="container">
     <div class="mode-toggle">
@@ -39,6 +39,17 @@
       <button id="findBtn">Find My Word</button>
     </div>
 
+    <!-- 🪶 SEO Paragraph -->
+    <section class="seo-text">
+      <h2>About Tip of Your Tongue</h2>
+      <p>
+        <strong>Tip of Your Tongue</strong> is a free AI-powered word finder built to help when a word is just out of reach. 
+        Simply describe what you mean — for example, “a word for fear of spiders” — and the tool will instantly suggest the most likely English word, 
+        plus alternative ideas and definitions. It’s perfect for writers, students, teachers, crossword fans, and anyone learning English. 
+        Stop searching your brain — start finding the right word faster.
+      </p>
+    </section>
+
     <div id="loading" class="hidden">Thinking 🤔...</div>
 
     <div id="resultCard" class="hidden">
@@ -54,7 +65,7 @@
     </div>
 
     <footer>
-      <p>© {{ 2025 }} Tip of Your Tongue • <a href="/robots.txt">robots.txt</a> • <a href="/sitemap.xml">sitemap</a></p>
+      <p>© 2025 Tip of Your Tongue</p>
     </footer>
   </div>
 
@@ -136,7 +147,9 @@
     // Dark / Light mode
     modeBtn.addEventListener("click", () => {
       document.body.classList.toggle("dark");
-      modeBtn.textContent = document.body.classList.contains("dark") ? "☀️ Light Mode" : "🌙 Dark Mode";
+      modeBtn.textContent = document.body.classList.contains("dark")
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
     });
   </script>
 </body>
