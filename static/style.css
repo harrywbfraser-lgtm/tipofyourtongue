@@ -155,6 +155,23 @@ body.dark #alternatives {
   gap: 10px;
 }
 
+#retryBtn {
+  background-color: #6c757d;
+}
+
+#retryBtn:hover {
+  background-color: #555;
+}
+
+body.dark #retryBtn {
+  background-color: #444;
+}
+
+body.dark #retryBtn:hover {
+  background-color: #666;
+}
+
+
 /* Collapsible About Section */
 .seo-text {
   text-align: center;

@@ -62,6 +62,7 @@
       <div class="actions">
         <button id="copyBtn">📋 Copy</button>
         <button id="shareBtn">🔗 Share</button>
+        <button id="retryBtn">🔁 Not That Word</button>
       </div>
     </div>
 
@@ -80,6 +81,7 @@
     const alternatives = document.getElementById("alternatives");
     const copyBtn = document.getElementById("copyBtn");
     const shareBtn = document.getElementById("shareBtn");
+    const retryBtn = document.getElementById("retryBtn");
     const modeBtn = document.getElementById("modeBtn");
     const toggleAbout = document.getElementById("toggleAbout");
     const aboutContent = document.getElementById("aboutContent");
@@ -126,6 +128,7 @@
     }
 
     button.addEventListener("click", fetchWord);
+    retryBtn.addEventListener("click", fetchWord); // 🔁 Same function, regenerates words
     clueInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") fetchWord();
     });
