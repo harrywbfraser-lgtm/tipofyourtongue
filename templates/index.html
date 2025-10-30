@@ -39,15 +39,16 @@
       <button id="findBtn">Find My Word</button>
     </div>
 
-    <!-- 🪶 SEO Paragraph -->
+    <!-- Collapsible SEO section -->
     <section class="seo-text">
-      <h2>About Tip of Your Tongue</h2>
-      <p>
-        <strong>Tip of Your Tongue</strong> is a free AI-powered word finder built to help when a word is just out of reach. 
-        Simply describe what you mean — for example, “a word for fear of spiders” — and the tool will instantly suggest the most likely English word, 
-        plus alternative ideas and definitions. It’s perfect for writers, students, teachers, crossword fans, and anyone learning English. 
-        Stop searching your brain — start finding the right word faster.
-      </p>
+      <button id="toggleAbout" class="toggle-about">About Tip of Your Tongue ▾</button>
+      <div id="aboutContent" class="about-content closed">
+        <p>
+          <strong>Tip of Your Tongue</strong> is a free AI-powered word finder built to help when a word is just out of reach.
+          Describe what you mean — for example, “a word for fear of spiders” — and the tool suggests the most likely English word,
+          plus alternatives and a definition. Ideal for writers, students, teachers, crossword fans, and English learners.
+        </p>
+      </div>
     </section>
 
     <div id="loading" class="hidden">Thinking 🤔...</div>
@@ -80,6 +81,8 @@
     const copyBtn = document.getElementById("copyBtn");
     const shareBtn = document.getElementById("shareBtn");
     const modeBtn = document.getElementById("modeBtn");
+    const toggleAbout = document.getElementById("toggleAbout");
+    const aboutContent = document.getElementById("aboutContent");
 
     async function fetchWord() {
       const clue = clueInput.value.trim();
@@ -150,6 +153,20 @@
       modeBtn.textContent = document.body.classList.contains("dark")
         ? "☀️ Light Mode"
         : "🌙 Dark Mode";
+    });
+
+    // Collapsible About section with animation
+    toggleAbout.addEventListener("click", () => {
+      const isClosed = aboutContent.classList.contains("closed");
+      if (isClosed) {
+        aboutContent.classList.remove("closed");
+        aboutContent.classList.add("open");
+        toggleAbout.textContent = "Hide About Tip of Your Tongue ▴";
+      } else {
+        aboutContent.classList.remove("open");
+        aboutContent.classList.add("closed");
+        toggleAbout.textContent = "About Tip of Your Tongue ▾";
+      }
     });
   </script>
 </body>
