@@ -1,26 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Basic SEO -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Tip of Your Tongue – Find the Word You Can't Remember</title>
   <meta name="description" content="Can't remember a word? Describe it and our AI will suggest the perfect word that's on the tip of your tongue, with definitions and alternatives." />
   <meta name="keywords" content="find word by description, can't remember a word, tip of your tongue, word finder, lethologica, AI word finder, vocabulary helper" />
   <link rel="canonical" href="https://tipofyourtongue.co.uk/" />
-
-  <!-- Open Graph / Social -->
-  <meta property="og:title" content="Tip of Your Tongue – Find the Word You Can't Remember" />
-  <meta property="og:description" content="Describe the word and we'll find it. Perfect for when it's right on the tip of your tongue." />
-  <meta property="og:url" content="https://tipofyourtongue.co.uk/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://tipofyourtongue.co.uk/static/preview.png" />
-
-  <!-- Favicon -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -30,23 +18,20 @@
     </div>
 
     <h1>🧠 Tip of Your Tongue</h1>
-    <p class="subtitle">
-      When you just cannot for the life of you remember a word... <strong>lethologica</strong>.
-    </p>
+    <p class="subtitle">When you just cannot for the life of you remember a word... <strong>lethologica</strong>.</p>
 
     <div class="card">
       <input type="text" id="clue" placeholder="Describe the word... e.g. 'fear of confined spaces'">
       <button id="findBtn">Find My Word</button>
     </div>
 
-    <!-- Collapsible SEO section -->
     <section class="seo-text">
       <button id="toggleAbout" class="toggle-about">About Tip of Your Tongue ▾</button>
       <div id="aboutContent" class="about-content closed">
         <p>
-          <strong>Tip of Your Tongue</strong> is a free AI-powered word finder built to help when a word is just out of reach.
-          Describe what you mean — for example, “a word for fear of spiders” — and the tool suggests the most likely English word,
-          plus alternatives and a definition. Ideal for writers, students, teachers, crossword fans, and English learners.
+          <strong>Tip of Your Tongue</strong> is a free AI-powered word finder that helps when a word is just out of reach.
+          Describe what you mean — for example, “a word for fear of spiders” — and the tool suggests the most likely word,
+          plus alternatives and definitions.
         </p>
       </div>
     </section>
@@ -56,7 +41,7 @@
     <div id="resultCard" class="hidden">
       <h2 id="primaryWord"></h2>
       <p id="definition"></p>
-      <hr>
+      <hr />
       <p id="alternatives"></p>
 
       <div class="actions">
@@ -66,9 +51,7 @@
       </div>
     </div>
 
-    <footer>
-      <p>© 2025 Tip of Your Tongue</p>
-    </footer>
+    <footer><p>© 2025 Tip of Your Tongue</p></footer>
   </div>
 
   <script>
@@ -86,7 +69,9 @@
     const toggleAbout = document.getElementById("toggleAbout");
     const aboutContent = document.getElementById("aboutContent");
 
-    async function fetchWord() {
+    let previousWords = [];
+
+    async function fetchWord(isRetry = false) {
       const clue = clueInput.value.trim();
       if (!clue) {
         alert("Please enter a clue!");
@@ -96,11 +81,13 @@
       loading.classList.remove("hidden");
       resultCard.classList.add("hidden");
 
+      const payload = { clue, previous: previousWords, is_retry: isRetry };
+
       try {
         const res = await fetch("/find_word", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ clue })
+          body: JSON.stringify(payload),
         });
 
         const data = await res.json();
@@ -114,7 +101,10 @@
           return;
         }
 
-        primaryWord.textContent = data.primary || "No result";
+        const word = data.primary || "No result";
+        previousWords.push(word.toLowerCase());
+
+        primaryWord.textContent = word;
         definition.textContent = data.definition || "";
         alternatives.textContent = (data.alternatives && data.alternatives.length)
           ? "Other possible words: " + data.alternatives.join(", ")
@@ -127,20 +117,24 @@
       }
     }
 
-    button.addEventListener("click", fetchWord);
-    retryBtn.addEventListener("click", fetchWord); // 🔁 Same function, regenerates words
+    button.addEventListener("click", () => {
+      previousWords = [];
+      fetchWord();
+    });
+    retryBtn.addEventListener("click", () => fetchWord(true));
     clueInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") fetchWord();
+      if (e.key === "Enter") {
+        previousWords = [];
+        fetchWord();
+      }
     });
 
-    // Copy to clipboard
     copyBtn.addEventListener("click", () => {
       const text = `${primaryWord.textContent} — ${definition.textContent}`;
       navigator.clipboard.writeText(text);
       alert("Copied to clipboard!");
     });
 
-    // Share
     shareBtn.addEventListener("click", async () => {
       const text = `I found this word on Tip of Your Tongue: ${primaryWord.textContent} — ${definition.textContent}`;
       if (navigator.share) {
@@ -150,15 +144,11 @@
       }
     });
 
-    // Dark / Light mode
     modeBtn.addEventListener("click", () => {
       document.body.classList.toggle("dark");
-      modeBtn.textContent = document.body.classList.contains("dark")
-        ? "☀️ Light Mode"
-        : "🌙 Dark Mode";
+      modeBtn.textContent = document.body.classList.contains("dark") ? "☀️ Light Mode" : "🌙 Dark Mode";
     });
 
-    // Collapsible About section with animation
     toggleAbout.addEventListener("click", () => {
       const isClosed = aboutContent.classList.contains("closed");
       if (isClosed) {
