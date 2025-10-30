@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tipofyourtongue.co.uk/sitemap.xml

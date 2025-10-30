@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from dotenv import load_dotenv
 import openai
 import os
@@ -11,6 +11,10 @@ app = Flask(__name__)
 # Load OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 print("🔑 Loaded API key:", openai.api_key[:8] + "..." if openai.api_key else "❌ No API key found")
+
+@app.route("/sitemap.xml")
+def sitemap():
+    return send_from_directory(".", "sitemap.xml")
 
 @app.route("/")
 def index():
