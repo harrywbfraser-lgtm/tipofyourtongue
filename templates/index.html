@@ -4,21 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Tip of Your Tongue – Find the Word You Can't Remember</title>
+
   <meta name="description" content="Can't remember a word? Describe it and our AI will suggest the perfect word that's on the tip of your tongue, with definitions and alternatives." />
   <meta name="keywords" content="find word by description, can't remember a word, tip of your tongue, word finder, lethologica, AI word finder, vocabulary helper" />
   <link rel="canonical" href="https://tipofyourtongue.co.uk/" />
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
-  <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XM4T8ZFM9K');
-</script>
 
-
+  <!-- ✅ Google Analytics (Corrected) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMT48ZFM9K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XMT48ZFM9K');
+  </script>
 </head>
 
 <body>
@@ -28,13 +28,16 @@
     </div>
 
     <h1>🧠 Tip of Your Tongue</h1>
-    <p class="subtitle">When you just cannot for the life of you remember a word... <strong>lethologica</strong>.</p>
+    <p class="subtitle">
+      When you just cannot for the life of you remember a word... <strong>lethologica</strong>.
+    </p>
 
     <div class="card">
       <input type="text" id="clue" placeholder="Describe the word... e.g. 'fear of confined spaces'">
       <button id="findBtn">Find My Word</button>
     </div>
 
+    <!-- 🪶 Collapsible About Section -->
     <section class="seo-text">
       <button id="toggleAbout" class="toggle-about">About Tip of Your Tongue ▾</button>
       <div id="aboutContent" class="about-content closed">
