@@ -1,110 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tip of Your Tongue</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- Basic SEO -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tip of Your Tongue – Find the Word You Can't Remember</title>
+  <meta name="description" content="Can't remember a word? Describe it and this tool will suggest the word on the tip of your tongue, plus alternatives, definition, and copy/share options." />
+  <meta name="keywords" content="can't remember a word, find word by description, tip of your tongue, word finder, lethologica, AI word finder" />
+  <link rel="canonical" href="https://tipofyourtongue.co.uk/" />
+
+  <!-- Open Graph / Social -->
+  <meta property="og:title" content="Tip of Your Tongue – Find the Word You Can't Remember" />
+  <meta property="og:description" content="Describe the word and we'll find it. Perfect for when it's right on the tip of your tongue." />
+  <meta property="og:url" content="https://tipofyourtongue.co.uk/" />
+  <meta property="og:type" content="website" />
+  <!-- If you create a preview image, put it in /static and update the line below -->
+  <meta property="og:image" content="https://tipofyourtongue.co.uk/static/preview.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>🧠 Tip of Your Tongue</h1>
-        <p class="subtitle">When you just cannot for the life of you remember a word... <strong>lethologica</strong>.</p>
-
-        <div class="mode-toggle">
-            <button id="modeBtn">🌙 Dark Mode</button>
-        </div>
-
-        <div class="card">
-            <input type="text" id="clue" placeholder="Describe the word...">
-            <button id="findBtn">Find My Word</button>
-        </div>
-
-        <div id="loading" class="hidden">Thinking 🤔...</div>
-
-        <div id="resultCard" class="hidden">
-            <h2 id="primaryWord"></h2>
-            <p id="definition"></p>
-            <hr>
-            <p id="alternatives"></p>
-
-            <div class="actions">
-                <button id="copyBtn">📋 Copy</button>
-                <button id="shareBtn">🔗 Share</button>
-            </div>
-        </div>
+  <div class="container">
+    <div class="mode-toggle">
+      <button id="modeBtn">🌙 Dark Mode</button>
     </div>
 
-    <script>
-        const button = document.getElementById("findBtn");
-        const clueInput = document.getElementById("clue");
-        const loading = document.getElementById("loading");
-        const resultCard = document.getElementById("resultCard");
-        const primaryWord = document.getElementById("primaryWord");
-        const definition = document.getElementById("definition");
-        const alternatives = document.getElementById("alternatives");
+    <h1>🧠 Tip of Your Tongue</h1>
+    <p class="subtitle">
+      When you just cannot for the life of you remember a word... <strong>lethologica</strong>.
+    </p>
 
-        const copyBtn = document.getElementById("copyBtn");
-        const shareBtn = document.getElementById("shareBtn");
-        const modeBtn = document.getElementById("modeBtn");
+    <div class="card">
+      <input type="text" id="clue" placeholder="Describe the word... e.g. 'fear of confined spaces'">
+      <button id="findBtn">Find My Word</button>
+    </div>
 
-        // 🧠 Search logic
-        button.addEventListener("click", async () => {
-            const clue = clueInput.value.trim();
-            if (!clue) return alert("Please enter a clue!");
+    <div id="loading" class="hidden">Thinking 🤔...</div>
 
-            loading.classList.remove("hidden");
-            resultCard.classList.add("hidden");
+    <div id="resultCard" class="hidden">
+      <h2 id="primaryWord"></h2>
+      <p id="definition"></p>
+      <hr>
+      <p id="alternatives"></p>
 
-            try {
-                const response = await fetch("/find_word", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ clue })
-                });
+      <div class="actions">
+        <button id="copyBtn">📋 Copy</button>
+        <button id="shareBtn">🔗 Share</button>
+      </div>
+    </div>
 
-                const data = await response.json();
-                loading.classList.add("hidden");
+    <footer>
+      <p>© {{ 2025 }} Tip of Your Tongue • <a href="/robots.txt">robots.txt</a> • <a href="/sitemap.xml">sitemap</a></p>
+    </footer>
+  </div>
 
-                if (data.primary) {
-                    primaryWord.textContent = data.primary;
-                    definition.textContent = data.definition ? data.definition : "";
-                    alternatives.textContent = data.alternatives.length
-                        ? "Other possible words: " + data.alternatives.join(", ")
-                        : "";
-                    resultCard.classList.remove("hidden");
-                } else {
-                    primaryWord.textContent = "No results found.";
-                    resultCard.classList.remove("hidden");
-                }
-            } catch (err) {
-                loading.classList.add("hidden");
-                alert("Something went wrong. Try again!");
-            }
+  <script>
+    const button = document.getElementById("findBtn");
+    const clueInput = document.getElementById("clue");
+    const loading = document.getElementById("loading");
+    const resultCard = document.getElementById("resultCard");
+    const primaryWord = document.getElementById("primaryWord");
+    const definition = document.getElementById("definition");
+    const alternatives = document.getElementById("alternatives");
+    const copyBtn = document.getElementById("copyBtn");
+    const shareBtn = document.getElementById("shareBtn");
+    const modeBtn = document.getElementById("modeBtn");
+
+    async function fetchWord() {
+      const clue = clueInput.value.trim();
+      if (!clue) {
+        alert("Please enter a clue!");
+        return;
+      }
+
+      loading.classList.remove("hidden");
+      resultCard.classList.add("hidden");
+
+      try {
+        const res = await fetch("/find_word", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clue })
         });
 
-        // 📋 Copy
-        copyBtn.addEventListener("click", () => {
-            const text = `${primaryWord.textContent} — ${definition.textContent}`;
-            navigator.clipboard.writeText(text);
-            alert("Copied to clipboard!");
-        });
+        const data = await res.json();
+        loading.classList.add("hidden");
 
-        // 🔗 Share
-        shareBtn.addEventListener("click", () => {
-            const text = `I found this word using Tip of Your Tongue: ${primaryWord.textContent} — ${definition.textContent}`;
-            navigator.share ? navigator.share({ text }) : alert("Sharing not supported here.");
-        });
+        if (data.error) {
+          primaryWord.textContent = "Error";
+          definition.textContent = data.error;
+          alternatives.textContent = "";
+          resultCard.classList.remove("hidden");
+          return;
+        }
 
-        // 🌗 Light/Dark Mode
-        modeBtn.addEventListener("click", () => {
-            document.body.classList.toggle("dark");
-            if (document.body.classList.contains("dark")) {
-                modeBtn.textContent = "☀️ Light Mode";
-            } else {
-                modeBtn.textContent = "🌙 Dark Mode";
-            }
-        });
-    </script>
+        primaryWord.textContent = data.primary || "No result";
+        definition.textContent = data.definition || "";
+        alternatives.textContent = (data.alternatives && data.alternatives.length)
+          ? "Other possible words: " + data.alternatives.join(", ")
+          : "No other suggestions.";
+
+        resultCard.classList.remove("hidden");
+      } catch (err) {
+        loading.classList.add("hidden");
+        alert("Something went wrong. Please try again.");
+      }
+    }
+
+    button.addEventListener("click", fetchWord);
+    clueInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") fetchWord();
+    });
+
+    // Copy to clipboard
+    copyBtn.addEventListener("click", () => {
+      const text = `${primaryWord.textContent} — ${definition.textContent}`;
+      navigator.clipboard.writeText(text);
+      alert("Copied to clipboard!");
+    });
+
+    // Share
+    shareBtn.addEventListener("click", async () => {
+      const text = `I found this word on Tip of Your Tongue: ${primaryWord.textContent} — ${definition.textContent}`;
+      if (navigator.share) {
+        await navigator.share({ title: "Tip of Your Tongue", text, url: "https://tipofyourtongue.co.uk/" });
+      } else {
+        alert("Sharing not supported in this browser.");
+      }
+    });
+
+    // Dark / Light mode
+    modeBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      modeBtn.textContent = document.body.classList.contains("dark") ? "☀️ Light Mode" : "🌙 Dark Mode";
+    });
+  </script>
 </body>
 </html>
